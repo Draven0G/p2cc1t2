@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import data from "./appData";
+import Header from "./Header";
+import Transactions from "./Transactions"
+import TransactionsForm from "./TransactionsForm";
+import Footer from "./Footer";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [transactions, setTransactions] = useState([])
+
+    // Fetch Transactions
+    useEffect(() => {
+        fetch("https://transactions-api-psi.vercel.app/transactions")
+            .then(resp => resp.json())
+            .then(data => setTransactions(data))
+    }, [])
+
+    // Add New Transaction
+    function addTransaction(transaction) {
+        setTransactions([...transactions, transaction])
+    }
+
+    return (
+        <>
+        <Header name={data.name} logo={data.logo}/>
+        <TransactionsForm addTransaction={addTransaction}/>
+        <Transactions transactions={transactions}/>
+        <Footer copyright={data.copyright}/>
+        </>
+    );
 }
 
 export default App;
